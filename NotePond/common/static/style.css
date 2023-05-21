@@ -14,7 +14,7 @@
   --dl-color-success-300: #199033;
   --dl-color-success-500: #32A94C;
   --dl-color-success-700: #4CC366;
-  --dl-color-template-blue-bg: #5228f5ff;
+  --dl-color-template-blue-bg: #6190e8;
 }
 .button {
   color: var(--dl-color-gray-black);
@@ -64,7 +64,7 @@
   margin-right: 40px;
 }
 .link:hover {
-  color: #5228F5;
+  color: #6190e8;
 }
 .card {
   flex: 1;
@@ -109,7 +109,7 @@
   margin-bottom: 24px;
 }
 .sub-title {
-  color: #5228F5;
+  color: #6190e8;
   font-style: normal;
   font-weight: 600;
   margin-bottom: 24px;

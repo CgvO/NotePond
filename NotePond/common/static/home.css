@@ -114,20 +114,20 @@
     display: flex;
     position: absolute;
     align-items: center;
-    border-color: linear-gradient(to right, #6190e8, #a7bfe8);;
+    border-color: #6190e8;
     border-width: 30px;
     border-radius: 100px;
     flex-direction: column;
-    background-color: linear-gradient(to right, #6190e8, #a7bfe8);;
+    background-color: #6190e8;
   }
   .home-outline {
     display: flex;
     align-items: center;
-    border-color: linear-gradient(to right, #6190e8, #a7bfe8);;
+    border-color: #6190e8;
     border-width: 20px;
     border-radius: 70px;
     flex-direction: column;
-    background-color: linear-gradient(to right, #6190e8, #a7bfe8);;
+    background-color: #6190e8;
   }
   .home-image {
     width: 900px;
@@ -278,7 +278,7 @@
     flex-direction: row;
   }
   .home-quote1 {
-    color: rgb(151, 126, 249);
+    color: #6190e8;
     width: 100%;
     max-width: 800px;
     margin-left: 16px;
