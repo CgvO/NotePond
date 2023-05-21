@@ -114,20 +114,20 @@
     display: flex;
     position: absolute;
     align-items: center;
-    border-color: #633df6;
+    border-color: linear-gradient(to right, #6190e8, #a7bfe8);;
     border-width: 30px;
     border-radius: 100px;
     flex-direction: column;
-    background-color: #633df6;
+    background-color: linear-gradient(to right, #6190e8, #a7bfe8);;
   }
   .home-outline {
     display: flex;
     align-items: center;
-    border-color: #7350f7;
+    border-color: linear-gradient(to right, #6190e8, #a7bfe8);;
     border-width: 20px;
     border-radius: 70px;
     flex-direction: column;
-    background-color: #7350f7;
+    background-color: linear-gradient(to right, #6190e8, #a7bfe8);;
   }
   .home-image {
     width: 900px;
@@ -292,7 +292,7 @@
     padding-right: 112px;
     flex-direction: row;
     justify-content: center;
-    background-color: #5228F5;
+    background-color: linear-gradient(to right, #6190e8, #a7bfe8);;
   }
   .home-container3 {
     flex: 0 0 auto;
