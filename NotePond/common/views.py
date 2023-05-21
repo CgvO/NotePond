@@ -5,10 +5,10 @@ def home(request):
     return render(request, 'base.html')
 
 def noteSearch(request):
-    return render(request, 'base.html')
+    return render(request, 'noteSearch.html')
 
 def noteView(request):
-    return render(request, 'base.html')
+    return render(request, 'noteView.html')
 
 def noteUpload(request):
-    return render(request, 'base.html')
+    return render(request, 'noteUpload.html')
