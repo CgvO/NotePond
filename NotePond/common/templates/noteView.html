@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+  <h2>Upload Notes</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      <h3>Note:</h3>
+      {{ form.as_p }}
+    {% endfor %}
+    <button type="submit">Upload</button>
+  </form>
+{% endblock %}
