@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <title>{% block title %}NotePond{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}"">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <style data-tag="reset-style-sheet">
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6,figure,blockquote,figcaption {  margin: 0;  padding: 0;}button {  background-color: transparent;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}input {  padding: 2px 4px;}img {  display: block;}html { scroll-behavior: smooth  }
+    </style>
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Poppins;
+        font-size: 16px;
+      }
+      body {
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: none;
+        text-transform: none;
+        letter-spacing: normal;
+        line-height: 1.15;
+        color: black;
+        background-color: #f5f5f5;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      data-tag="font"/>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
+  <body>
+    <div>
+      <link href="{% static 'home.css' %}" rel="stylesheet" />
+      <div class="home-container">
+        <section class="home-main-container">
+          <div class="home-menu">
+            <div class="home-navigation">
+              <nav class="home-centered">
+                <div class="home-left">
+                  <div class="home-links">
+                    <a class="home-text link" href="{% url 'index' %}">Home</a>
+                    <a class="home-text01 link" href="{% url 'admin:index' %}">Admin</a>
+                  </div>
+                </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+          <header class="home-header">
+            <h1 class="home-text05">NotePond</h1>
+            <p class="home-text06">Note Repository for Students at the University of Oregon.</p>
+          </header>
+          <div class="home-logo">
+            <div class="home-outline">
+              <img
+                alt="Image"
+                src="{% static 'logo.png' %}"
+                loading="lazy"
+                class="home-image"/>
+            </div>
+          </div>
+        </section>
+        <section class="home-features">
+          <div class="home-title">
+            <span class="home-text08">
+              Upload, Download, and View Notes!
+            </span>
+          </div>
+          <div class="home-cards">
+            <div class="home-container1">
+              <div class="card">
+                <img
+                  alt="Image"
+                  src="{% static 'upload.png' %}"
+                  class="home-icon"/>
+                <span class="home-text09">Upload</span>
+                <span class="home-text10">
+                  Upload notes to our safe and free to use
+                  note repository.
+                </span>
+              </div>
+              <div class="home-download card">
+                <img
+                  alt="Image"
+                  src="{% static 'download.png' %}"
+                  class="home-icon1"/>
+                <span class="home-text11">Download</span>
+                <span class="home-text12">
+                  Download existing notes for your own use.
+                </span>
+              </div>
+            </div>
+            <div class="home-container2">
+              <div class="card">
+                <img
+                  alt="Image"
+                  src="{% static 'test.png' %}"
+                  class="home-icon2"/>
+                <span class="home-text13">View</span>
+                <span class="home-text14">
+                  View notes from almost any class at the University of Oregon.
+                </span>
+              </div>
+              <div class="card">
+                <img
+                  alt="Image"
+                  src="{% static 'time.png' %}"
+                  class="home-icon3"/>
+                <span class="home-text15">Coming Soon...</span>
+                <span class="home-text16">
+                  <span>
+                    Use AI to summarize notes in our next update coming later this year.
+                  </span>
+                  <br />
+                  <br />
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="home-quote-container">
+          <div class="home-quote">
+            <span class="home-message">
+              “NotePond is the best note repository out there!”
+            </span>
+            <div class="home-author">
+              <span class="home-quote1">- Nick S.</span>
+            </div>
+          </div>
+        </section>
+        <section class="home-footer">
+          <div class="home-container3">
+            <div class="home-container4">
+              <div class="home-container5">
+                <div class="home-container6">
+                  <span class="home-text20">NotePond</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+<main>{% block content %}{% endblock %}</main>
+</html>
