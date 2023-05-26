@@ -11,7 +11,7 @@
     </style>
     <style data-tag="default-style-sheet">
       html {
-        font-family: Poppins;
+        font-family: Inter;
         font-size: 16px;
       }
       body {
@@ -42,37 +42,16 @@
                 <div class="home-left">
                   <div class="home-links">
                     <a class="home-text link" href="{% url 'index' %}">Home</a>
-                    <a class="home-text01 link" href="{% url 'admin:index' %}">Admin</a>
+                    <a class="home-text link" href="{% url 'upload' %}">Upload</a>
+                    <a class="home-text link" href="{% url 'admin:index' %}">Admin</a>
                   </div>
                 </div>
-                </div>
               </nav>
-            </div>
-          </div>
-        </section>
-        <section class="home-footer">
-          <div class="home-container3">
-            <div class="home-container4">
-              <div class="home-container5">
-                <div class="home-container6">
-                  <span class="home-text20">NotePond</span>
-                </div>
-              </div>
             </div>
           </div>
         </section>
       </div>
     </div>
   </body>
-<main>
-    {% block content %}
-    <div id="form">
-        <h5>Upload Notes Here!</h5><br/>
-        <form class="upload-field" method="post" enctype="multipart/form-data">{% csrf_token %} {{ form.as_p }}
-          <input type="file" name="upload"/>
-          <button type="submit" class="btn">Upload</button>
-        </form>
-      </div>
-    {% endblock %}
-</main>
+<main>{% block content %}{% endblock %}</main>
 </html>
