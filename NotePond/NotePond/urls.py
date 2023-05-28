@@ -22,5 +22,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("upload/", views.noteUpload, name="upload"),
     path("", views.home, name="index"),
+<<<<<<< Updated upstream
     path('noteSearch/', views.noteSearch, name='noteSearch'),
+=======
+    path("search/", views.noteSearch, name='noteSearch'),
+    path("upload/", views.noteUpload, name='noteUpload'),
+    path("note/", views.noteView, name="noteView")
+>>>>>>> Stashed changes
 ]
