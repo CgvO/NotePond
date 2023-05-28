@@ -7,7 +7,16 @@ def home(request):
     return render(request, 'base.html')
 
 def noteSearch(request):
-    return render(request, 'noteSearch.html')
+    if request.method == 'GET':
+        tags = request.GET.getlist('tag')  # Get the selected tags from the request
+        
+        # Query the notes based on the selected tags
+        notes = Note.objects.filter(tags__name__in=tags).distinct()
+        
+        context = {
+            'notes': notes,
+        }
+        return render(request, 'noteSearch.html', context)
 
 def noteView(request):
     return render(request, 'noteView.html')
