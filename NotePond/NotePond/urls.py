@@ -20,7 +20,8 @@ from common import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("upload/", views.noteUpload, name="upload"),
     path("", views.home, name="index"),
-    path('noteSearch/', views.noteSearch, name='noteSearch'),
+    path("upload/", views.noteUpload, name="noteUpload"),
+    path('search/', views.noteSearch, name='noteSearch'),
+    path("view/", views.noteView, name="noteView")
 ]
