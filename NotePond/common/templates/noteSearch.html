@@ -179,7 +179,7 @@
 
   {%for note in notes%}
   {{note.title}}
-  <a href="{% url 'view' note_id=note.id %}">view file</a>
+  <a href="{% url 'noteView' note_id=note.id %}">view file</a>
   {%endfor%}
 
 

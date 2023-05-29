@@ -35,7 +35,12 @@ def noteSearch(request):
 
         # Filter notes based on selected tag and course
         notes = search_files(data, selected_tags, selected_course)
-
+        context = {
+            'tags': tags,
+            'courses': courses,
+            'notes': notes,
+            'form': form,
+        }   
         return render(request, 'noteSearch.html', context)
     else:
 

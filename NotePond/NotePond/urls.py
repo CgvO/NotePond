@@ -25,7 +25,7 @@ urlpatterns = [
     path("", views.home, name="index"),
     path("upload/", views.noteUpload, name="noteUpload"),
     path('search/', views.noteSearch, name='noteSearch'),
-    path("view/", views.noteView, name="noteView"),
+    path("view/<int:note_id>/", views.noteView, name="noteView"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

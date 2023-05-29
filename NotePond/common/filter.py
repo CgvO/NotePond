@@ -13,6 +13,6 @@ def search_files(data, selected_tags, selected_course):
             Q(tags__id__in=selected_tags) & Q(course__id=selected_course)
         ).distinct()
     """
-    return Note.objects.all()
+    return Note.objects.filter(title__contains=data)
 
 
