@@ -103,7 +103,6 @@
     </style>
         <style>
           /* Form container */
-    
           #form-title {
             display: flex;
             align-items: center;
@@ -157,6 +156,17 @@
             border-radius: 5px;
             border: 1px solid #ccc;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+
+          form button#add_note_form_btn {
+            background-color: #6190e8;
+            color: #ffffff;
+            cursor: pointer;
+          }
+        
+          form button#add_note_form_btn:hover {
+            color: #ffffff;
+            background-color: #000000;
           }
         
           /* Add tag button styling */
@@ -306,6 +316,7 @@
           </div>
           {% block content %}
           <form method="post" enctype="multipart/form-data">
+            <div id="form-title">Upload Notes</div>
             {% csrf_token %} {{ formset.management_form }} {{ formset.media }}
             <div id="note_form_set">
               {% for form in formset %}
@@ -315,8 +326,8 @@
             <div id="tag_container">
               <input type="text" name="tag-0" class="tag-input" />
             </div>
-            <button type="button" id="add_note_form_btn">Add another note</button>
-            <button type="button" id="add_tag_btn">Add another tag</button>
+            <button type="button" id="add_note_form_btn">Add Another Note</button>
+            <button type="button" id="add_tag_btn">Add Another Tag</button>
             <button type="submit">Upload</button>
           </form>
           {% endblock %}
