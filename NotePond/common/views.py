@@ -12,17 +12,19 @@ def home(request):
 
 
 def noteSearch(request):
-    if request.method == 'GET':
-        # Get the selected tags from the request
-        tags = request.GET.getlist('tag')
-
-        # Query the notes based on the selected tags
-        notes = Note.objects.filter(tags__name__in=tags).distinct()
-
-        context = {
-            'notes': notes,
-        }
-        return render(request, 'noteSearch.html', context)
+    if request.method == 'POST':
+        selected_tags = request.POST.getlist('tags')
+        notes = Note.objects.filter(tags__name__in=selected_tags).distinct()
+    else:
+        # Fetch all available tags for rendering the tag selection form
+        tags = Tag.objects.all()
+        notes = []
+        
+    context = {
+        'tags': tags,
+        'notes': notes,
+    }
+    return render(request, 'noteSearch.html', context)
 
 
 def noteView(request):
