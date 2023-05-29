@@ -3,7 +3,7 @@
   <head>
     {% load static %}
     <title>{% block title %}NotePond{% endblock %}</title>
-    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}"">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
     <style data-tag="reset-style-sheet">
@@ -107,6 +107,21 @@
       data-tag="font"
     />
     <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <script>
+      var tagCount = 1;
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("add_tag_btn")
+          .addEventListener("click", function () {
+            var input = document.createElement("input");
+            input.type = "text";
+            input.name = "tag-" + tagCount;
+            input.className = "tag-input";
+            document.getElementById("tag_container").appendChild(input);
+            tagCount++;
+          });
+      });
+    </script>
   </head>
   <body>
     <div>
@@ -134,5 +149,17 @@
       </div>
     </div>
   </body>
-  <main>{% block content %}{% endblock %}</main>
+  <main>
+    {% block content %}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ formset.management_form }} {% for form in formset %}
+      {{ form.as_p }} {% endfor %}
+      <div id="tag_container">
+        <input type="text" name="tag-0" class="tag-input" />
+      </div>
+      <button type="button" id="add_tag_btn">Add another tag</button>
+      <button type="submit">Upload</button>
+    </form>
+    {% endblock %}
+  </main>
 </html>
