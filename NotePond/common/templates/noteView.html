@@ -32,5 +32,4 @@
     <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
   <img src="{{ note.note_image.url }}" alt="Image">
-  <iframe src="{% url 'view_pdf' note_id=note_id%}" width="500" height="600" type='application/pdf'></iframe>
-
+  <a href="{% url 'view_pdf' note_id=note_id%}" width="500" height="600" type='application/pdf'>view pdf</a>
