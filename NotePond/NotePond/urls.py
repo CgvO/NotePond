@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from common import views
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     path('search/', views.noteSearch, name='noteSearch'),
     path("view/<int:note_id>/", views.noteView, name="noteView"),
     path('view_pdf/<int:note_id>', views.pdf_view, name='view_pdf'),
+    path('select2/', include("django_select2.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

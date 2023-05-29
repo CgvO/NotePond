@@ -8,14 +8,14 @@ class NoteForm(forms.ModelForm):
         queryset=Course.objects.all(), required=False)
     week = forms.ChoiceField(choices=[(i, i)
                              for i in range(1, 12)], required=False)
-    
 
     class Meta:
         model = Note
         fields = ['title', 'note_file', 'course', 'week', 'tags']
         widgets = {
-            'tags': Select2MultipleWidget(),
+            'tags': forms.SelectMultiple(attrs={'class': 'select2'})
         }
+
 
 class search(forms.Form):
     data = forms.CharField(max_length=20)
@@ -23,4 +23,3 @@ class search(forms.Form):
         queryset=Tag.objects.all(), required=False)
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(), required=False)
-    
