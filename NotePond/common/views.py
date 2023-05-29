@@ -5,10 +5,9 @@ from django.http import FileResponse
 from .forms import NoteForm
 from django.forms import formset_factory
 from .models import *
-
+from .forms import *
+from .filter import *
 # Create your views here.
-
-
 def home(request):
     return render(request, 'base.html')
 
@@ -16,24 +15,31 @@ def home(request):
 def noteSearch(request):
     tags = Tag.objects.all()  # Initialize tags variable with empty queryset
     courses = Course.objects.all()  # Fetch all courses
-    
-    if request.method == 'POST':
-        selected_tags = request.POST.getlist('tags')
-        selected_course = request.POST.get('course')
-        
-        # Filter notes based on selected tag and course
-        notes = Note.objects.filter(
-            Q(tags__id__in=selected_tags) & Q(course__id=selected_course)
-        ).distinct()
-    else:
-        notes = []
-
+    notes = Note.objects.all()
+    form = search()
     context = {
         'tags': tags,
         'courses': courses,
         'notes': notes,
+        'form': form,
     }
-    return render(request, 'noteSearch.html', context)
+    
+    if request.method == 'POST':
+        selected_tags = request.POST.getlist('tags')
+        selected_course = request.POST.get('course')
+        form = search(request.POST)
+
+        if form.is_valid():
+           #get the data from the from
+           data = form.cleaned_data.get('data')
+
+        # Filter notes based on selected tag and course
+        notes = search_files(data, selected_tags, selected_course)
+
+        return render(request, 'noteSearch.html', context)
+    else:
+
+        return render(request, 'noteSearch.html', context)
 
 
 
@@ -44,6 +50,7 @@ def noteView(request, note_id):
        return redirect("noteSearch.html")
    else:
        return render(request, 'noteView.html', {"note_id":note_id,})
+   
    
 def pdf_view(request, note_id):
    note = Note.objects.all()[note_id-1]

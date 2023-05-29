@@ -172,6 +172,12 @@
     {% else %}
         <p>No notes found.</p>
     {% endif %}
+    <form method=POST name="searched">
+      {% csrf_token %} {{form.as_p}}
+      <button type="submit" name="searched">Submit</button>
+
+  </form>
+
     {% endblock %}
   </main>
 </html>

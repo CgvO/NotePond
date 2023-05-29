@@ -15,3 +15,6 @@ class NoteForm(forms.ModelForm):
         widgets = {
             'tags': Select2MultipleWidget(),
         }
+
+class search(forms.Form):
+    data = forms.CharField(max_length=20)
