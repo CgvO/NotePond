@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 
+from .models import Note, Tag, Course
+
 from .forms import NoteForm
 from django.forms import formset_factory
 from .models import *
@@ -37,18 +39,19 @@ def noteUpload(request):
     if request.method == 'POST':
         formset = NoteFormSet(request.POST, request.FILES)
         if formset.is_valid():
-            for key, tag_name in request.POST.items():
-                if key.startswith('tag-'):
-                    tag, created = Tag.objects.get_or_create(name=tag_name)
-                    note.tags.add(tag)
             for form in formset:
                 # Weird saving becuase of many-to-many tag field. Must first create
                 # unsaved note with ID to reference in many-to-many connection
                 note = form.save(commit=False)
                 note.save()
-                form.save_m2m()
 
-            return redirect('noteSearch.html')
+                for key, tag_name in request.POST.items():
+                    if key.startswith('tag-'):
+                        print(f"key: {key}, name: {tag_name}")
+                        tag, created = Tag.objects.get_or_create(name=tag_name)
+                        note.tags.add(tag)
+
+            return redirect('noteSearch')
     else:
         formset = NoteFormSet()
 

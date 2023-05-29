@@ -1,5 +1,6 @@
 from django import forms
 from .models import Note, Tag, Course
+from django_select2.forms import Select2MultipleWidget
 
 
 class NoteForm(forms.ModelForm):
@@ -12,5 +13,5 @@ class NoteForm(forms.ModelForm):
         model = Note
         fields = ['title', 'note_file', 'course', 'week', 'tags']
         widgets = {
-            'tags': forms.CheckboxSelectMultiple(),
+            'tags': Select2MultipleWidget(),
         }
