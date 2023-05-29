@@ -122,6 +122,42 @@
           });
       });
     </script>
+    <script>
+      var tagCount = 1;
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("add_tag_btn")
+          .addEventListener("click", function () {
+            var input = document.createElement("input");
+            input.type = "text";
+            input.name = "tag-" + tagCount;
+            input.className = "tag-input";
+            document.getElementById("tag_container").appendChild(input);
+            tagCount++;
+          });
+
+        document
+          .getElementById("add_note_form_btn")
+          .addEventListener("click", function () {
+            var formset = document.getElementById("note_form_set");
+            var lastForm =
+              formset.getElementsByClassName("note-form")[
+                formset.getElementsByClassName("note-form").length - 1
+              ];
+            var newForm = lastForm.cloneNode(true);
+
+            newForm.querySelector('input[name$="-title"]').value = "";
+            newForm.querySelector('input[name$="-note_file"]').value = "";
+
+            formset.appendChild(newForm);
+
+            var totalFormsInput = document.querySelector(
+              'input[name="form-TOTAL_FORMS"]'
+            );
+            totalFormsInput.value = parseInt(totalFormsInput.value) + 1;
+          });
+      });
+    </script>
     <link
       href="{% static 'django_select2/django_select2.css' %}"
       rel="stylesheet"
@@ -157,11 +193,16 @@
   <main>
     {% block content %}
     <form method="post" enctype="multipart/form-data">
-      {% csrf_token %} {{ formset.management_form }} {{ formset.media }} 
-      {% for form in formset %} {{ form.as_p }} {% endfor %}
+      {% csrf_token %} {{ formset.management_form }} {{ formset.media }}
+      <div id="note_form_set">
+        {% for form in formset %}
+        <div class="note-form">{{ form.as_p }}</div>
+        {% endfor %}
+      </div>
       <div id="tag_container">
         <input type="text" name="tag-0" class="tag-input" />
       </div>
+      <button type="button" id="add_note_form_btn">Add another note</button>
       <button type="button" id="add_tag_btn">Add another tag</button>
       <button type="submit">Upload</button>
     </form>
