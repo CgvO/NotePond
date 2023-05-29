@@ -7,6 +7,7 @@ from django.forms import formset_factory
 from .models import *
 from .forms import *
 from .filter import *
+from django.shortcuts import get_object_or_404
 import os
 # Create your views here.
 def home(request):
@@ -54,6 +55,14 @@ def noteView(request, note_id):
    else:
        note = Note.objects.all()[note_id-1]
        return render(request, 'noteView.html', {"note_id":note_id, "note":note})
+
+def download_file(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+    file_content = note.file_content
+    file_name = f"note_{note_id}.txt"
+
+    response = FileResponse(file_content, as_attachment=True, filename=file_name)
+    return response
    
 def pdf_view(request, note_id):
    note = Note.objects.all()[note_id-1]
