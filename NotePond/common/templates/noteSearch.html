@@ -5,6 +5,16 @@
     <title>Title</title>
 </head>
 <body>
+    <form method=POST name="searched">
+        {% csrf_token %} {{form.as_p}}
+        <button type="submit" name="searched">Submit</button>
+
+    </form>
+
+    {%for note in notes%}
+    {{note.title}}
+    <a href="{% url 'view' note_id=note.id %}">view file</a>
+    {%endfor%}
 
 </body>
 </html>

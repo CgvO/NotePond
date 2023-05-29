@@ -17,9 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from common import views
+from django.conf import settings
+from django.conf.urls.static import static
 
+app_name = 'common'
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("upload/", views.noteUpload, name="upload"),
     path("", views.home, name="index"),
-]
+    path("search/", views.noteSearch, name="search"),
+    path("view/<int:note_id>/", views.noteView, name="view"),
+    path("pdf/", views.pdf_view, name="pdf"),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

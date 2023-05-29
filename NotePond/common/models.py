@@ -15,3 +15,6 @@ class Note(models.Model):
     week = models.IntegerField(null=True, blank=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+
+
+    

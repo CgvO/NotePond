@@ -8,3 +8,8 @@ class NoteForm(forms.ModelForm):
         widgets = {
             'tags' : forms.CheckboxSelectMultiple(),
         }
+
+
+class search(forms.Form):
+    data = forms.CharField(max_length=20)
+

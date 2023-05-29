@@ -1,2 +1,7 @@
-def show_document_contents(document):
-    '''Displays the contents of a document to the user, could show the frontend like/dislike button and annotaion feature'''
+from .models import Note, Tag, Course
+
+
+def show_document_contents(note):
+    note = Note.objects.filter(title=note)
+    return note
+
