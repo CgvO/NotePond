@@ -122,6 +122,11 @@
           });
       });
     </script>
+    <link
+      href="{% static 'django_select2/django_select2.css' %}"
+      rel="stylesheet"
+    />
+    <script src="{% static 'django_select2/django_select2.js' %}"></script>
   </head>
   <body>
     <div>
@@ -152,8 +157,8 @@
   <main>
     {% block content %}
     <form method="post" enctype="multipart/form-data">
-      {% csrf_token %} {{ formset.management_form }} {% for form in formset %}
-      {{ form.as_p }} {% endfor %}
+      {% csrf_token %} {{ formset.management_form }} {{ formset.media }} 
+      {% for form in formset %} {{ form.as_p }} {% endfor %}
       <div id="tag_container">
         <input type="text" name="tag-0" class="tag-input" />
       </div>
