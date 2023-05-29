@@ -7,8 +7,7 @@ from django.forms import formset_factory
 from .models import *
 from .forms import *
 from .filter import *
-from django.shortcuts import get_object_or_404
-from django.http import FileResponse
+import os
 # Create your views here.
 def home(request):
     return render(request, 'base.html')
@@ -27,16 +26,17 @@ def noteSearch(request):
     }
     
     if request.method == 'POST':
-        selected_tags = request.POST.getlist('tags')
-        selected_course = request.POST.get('course')
+        
         form = search(request.POST)
 
         if form.is_valid():
            #get the data from the from
            data = form.cleaned_data.get('data')
+           tags = request.POST.getlist('tags')
+           course = request.POST.get('course')
 
         # Filter notes based on selected tag and course
-        notes = search_files(data, selected_tags, selected_course)
+        notes = search_files(data, tags, course)
         context = {
             'tags': tags,
             'courses': courses,
@@ -48,33 +48,17 @@ def noteSearch(request):
 
         return render(request, 'noteSearch.html', context)
 
-
-
-
-
 def noteView(request, note_id):
    if request.method == "POST":
        return redirect("noteSearch.html")
    else:
-       #Note = note.object.all()[note_id-1]
-       return render(request, 'noteView.html', {"note_id":note_id,})
-
-
-def download_file(request, note):
-
-    file_path = note.note_file.path
-    file_name = note['name']
-
-    response = FileResponse(open(file_path, 'rb'))
-    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
-    return response
-   
+       note = Note.objects.all()[note_id-1]
+       return render(request, 'noteView.html', {"note_id":note_id, "note":note})
    
 def pdf_view(request, note_id):
    note = Note.objects.all()[note_id-1]
-   return FileResponse(open(note.note_file.path, 'rb'), content_type='application/pdf')
-
-
+   response = FileResponse(open(note.note_file.path, 'rb'), content_type='application/pdf')
+   return response
 
 def noteUpload(request):
     NoteFormSet = formset_factory(

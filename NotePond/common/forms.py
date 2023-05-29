@@ -8,6 +8,7 @@ class NoteForm(forms.ModelForm):
         queryset=Course.objects.all(), required=False)
     week = forms.ChoiceField(choices=[(i, i)
                              for i in range(1, 12)], required=False)
+    
 
     class Meta:
         model = Note
@@ -18,3 +19,8 @@ class NoteForm(forms.ModelForm):
 
 class search(forms.Form):
     data = forms.CharField(max_length=20)
+    tag = forms.ModelChoiceField(
+        queryset=Tag.objects.all(), required=False)
+    course = forms.ModelChoiceField(
+        queryset=Course.objects.all(), required=False)
+    
