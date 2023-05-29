@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-
+from django.db.models import Q
 from .models import Note, Tag, Course
 
 from .forms import NoteForm
@@ -14,19 +14,29 @@ def home(request):
 
 
 def noteSearch(request):
+    tags = Tag.objects.all()  # Initialize tags variable with empty queryset
+    courses = Course.objects.all()  # Fetch all courses
+    
     if request.method == 'POST':
         selected_tags = request.POST.getlist('tags')
-        notes = Note.objects.filter(tags__name__in=selected_tags).distinct()
-    else:
-        # Fetch all available tags for rendering the tag selection form
-        tags = Tag.objects.all()
-        notes = []
+        selected_course = request.POST.get('course')
         
+        # Filter notes based on selected tag and course
+        notes = Note.objects.filter(
+            Q(tags__id__in=selected_tags) & Q(course__id=selected_course)
+        ).distinct()
+    else:
+        notes = []
+
     context = {
         'tags': tags,
+        'courses': courses,
         'notes': notes,
     }
     return render(request, 'noteSearch.html', context)
+
+
+
 
 
 def noteView(request):
