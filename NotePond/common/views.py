@@ -4,6 +4,7 @@ from .models import Note, Tag, Course
 
 from .forms import NoteForm
 from django.forms import formset_factory
+from .models import *
 
 # Create your views here.
 
