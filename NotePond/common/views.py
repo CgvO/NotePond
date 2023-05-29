@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import NoteForm
 from django.forms import formset_factory
+from .models import *
 
 # Create your views here.
 def home(request):
