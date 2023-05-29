@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import Note, Tag, Course
-
+from django.http import FileResponse
 from .forms import NoteForm
 from django.forms import formset_factory
 from .models import *
@@ -39,8 +39,16 @@ def noteSearch(request):
 
 
 
-def noteView(request):
-    return render(request, 'noteView.html')
+def noteView(request, note_id):
+   if request.method == "POST":
+       return redirect("noteSearch.html")
+   else:
+       return render(request, 'noteView.html', {"note_id":note_id,})
+   
+def pdf_view(request, note_id):
+   note = Note.objects.all()[note_id-1]
+   return FileResponse(open(note.note_file.path, 'rb'), content_type='application/pdf')
+
 
 
 def noteUpload(request):
