@@ -26,16 +26,17 @@ def noteSearch(request):
     }
     
     if request.method == 'POST':
-        selected_tags = request.POST.getlist('tags')
-        selected_course = request.POST.get('course')
+        
         form = search(request.POST)
 
         if form.is_valid():
            #get the data from the from
            data = form.cleaned_data.get('data')
+           tags = request.POST.getlist('tags')
+           course = request.POST.get('course')
 
         # Filter notes based on selected tag and course
-        notes = search_files(data, selected_tags, selected_course)
+        notes = search_files(data, tags, course)
         context = {
             'tags': tags,
             'courses': courses,

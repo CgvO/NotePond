@@ -127,62 +127,35 @@
                     <a class="home-text link" href="{% url 'noteUpload' %}"
                       >Upload</a
                     >
+                    <a class="home-text link" href="{% url 'noteSearch' %}"
+                    >Search</a
+                    >
                     <a class="home-text link" href="{% url 'admin:index' %}"
                       >Admin</a
-                    >
-                    <a class="home-text link" href="{% url 'noteSearch' %}"
-                      >Search</a
                     >
                   </div>
                 </div>
               </nav>
             </div>
           </div>
+          {% block content %}
+        
+          <form method=POST name="searched">
+            {% csrf_token %} {{form.as_p}}
+            <button type="submit" name="searched">Submit</button>
+        </form>
+      
+        {%for note in notes%}
+        {{note.title}}
+        <a href="{% url 'noteView' note_id=note.id %}">view file</a>
+        {%endfor%}
+      
+          
+          {% endblock %}
         </section>
       </div>
     </div>
   </body>
   <main>
-    {% block content %}
-    <form method="post" action="{% url 'noteSearch' %}">
-        {% csrf_token %}
-        <label for="tags">Select Tags:</label>
-        <select name="tags" id="tags" multiple>
-            {% for tag in tags %}
-                <option value="{{ tag.id }}">{{ tag.name }}</option>
-            {% endfor %}
-        </select>
-        
-        <label for="course">Select Course:</label>
-        <select name="course" id="course">
-            {% for course in courses %}
-                <option value="{{ course.id }}">{{ course.name }}</option>
-            {% endfor %}
-        </select>
-        
-        <button type="submit">Search</button>
-    </form>
-    
-    {% if notes %}
-        <ul>
-            {% for note in notes %}
-                <li>{{ note.title }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No notes found.</p>
-    {% endif %}
-    <form method=POST name="searched">
-      {% csrf_token %} {{form.as_p}}
-      <button type="submit" name="searched">Submit</button>
-  </form>
-
-  {%for note in notes%}
-  {{note.title}}
-  <a href="{% url 'noteView' note_id=note.id %}">view file</a>
-  {%endfor%}
-
-
-    {% endblock %}
   </main>
 </html>
