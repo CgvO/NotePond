@@ -115,12 +115,16 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 MEDIA_ROOT= os.path.join(BASE_DIR, "media")
-MEDIA_URL="notes/"
+#MEDIA_URL="notes/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/notes/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'notes/')
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+#XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
