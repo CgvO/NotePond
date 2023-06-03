@@ -221,6 +221,9 @@
       .django-select2 {
         margin: 0px;
       }
+      .select2 {
+        width: 100%;
+      }
     </style>
     <link
       rel="stylesheet"
@@ -235,43 +238,19 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("add_note_form_btn")
-          .addEventListener("click", function () {
-            var formset = document.getElementById("note_form_set");
-            var lastForm =
-              formset.getElementsByClassName("note-form")[
-                formset.getElementsByClassName("note-form").length - 1
-              ];
-            var newForm = lastForm.cloneNode(true);
-
-            newForm.querySelector('input[name$="-title"]').value = "";
-            newForm.querySelector('input[name$="-note_file"]').value = "";
-
-            formset.appendChild(newForm);
-
-            var totalFormsInput = document.querySelector(
-              'input[name="form-TOTAL_FORMS"]'
-            );
-            totalFormsInput.value = parseInt(totalFormsInput.value) + 1;
-
-            // Apply select2 to the tags field of the new form
-            $(newForm)
-              .find(".select2")
-              .select2({
-                tags: true,
-                tokenSeparators: [",", " "],
-              });
-          });
-      });
-
-      $(document).ready(function () {
-        $(".select2").select2({
-          tags: true,
-          tokenSeparators: [",", " "],
-        });
-      });
+$(document).ready(function () {
+  $(".select2").select2({
+    tags: true,
+    tokenSeparators: [",", " "],
+    createTag: function (params) {
+      return {
+        id: params.term,
+        text: params.term,
+        newOption: true
+      }
+    }
+  });
+});
     </script>
   </head>
   <body>
@@ -304,6 +283,7 @@
             <form method="post" enctype="multipart/form-data">
               <div id="form-title">Upload Notes</div>
               {% csrf_token %} {{ formset.management_form }} {{ formset.media }}
+              {{ tag_form.as_p }}
               <div id="note_form_set">
                 {% for form in formset %}
                 <div class="note-form">{{ form.as_p }}</div>

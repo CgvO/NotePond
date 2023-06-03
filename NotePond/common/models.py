@@ -1,31 +1,30 @@
 from django.db import models
 
-
 class Tag(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.SlugField(max_length=200, unique=True, help_text="Enter a tag name")
 
     def __str__(self):
         return self.name
-
 
 class Course(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True, help_text="Enter a course name")
 
     def __str__(self):
         return self.name
-
 
 class Note(models.Model):
     title = models.CharField(max_length=200)
+    share_code = models.PositiveIntegerField(null=True, blank=True)
+    private_code = models.PositiveIntegerField(null=True, blank=True)
     note_file = models.FileField(upload_to='notes/')
     note_image = models.ImageField(upload_to='notes/images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name='notes')
     course = models.ForeignKey(
-        Course, null=True, blank=True, on_delete=models.SET_NULL)
-    week = models.IntegerField(null=True, blank=True)
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
+        Course, null=True, blank=True, on_delete=models.CASCADE, related_name='notes')
+    week = models.PositiveIntegerField(null=True, blank=True)
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title

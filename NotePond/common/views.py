@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.db.models import Q
 from .models import Note, Tag, Course
 from django.http import FileResponse, HttpResponse
 from .forms import NoteForm
@@ -95,25 +94,21 @@ def pdf_view(request, note_id):
         
 
 
-
 def noteUpload(request):
-    NoteFormSet = formset_factory(
-        NoteForm, extra=1)  # Starts with 1 by default
+    NoteFormSet = formset_factory(NoteForm, extra=1)
+    tag_form = TagForm(request.POST or None)
     if request.method == 'POST':
         formset = NoteFormSet(request.POST, request.FILES)
-        if formset.is_valid():
+        if formset.is_valid() and tag_form.is_valid():
+            tags = tag_form.cleaned_data['tags']
             for form in formset:
-                # Weird saving becuase of many-to-many tag field. Must first create
-                # unsaved note with ID to reference in many-to-many connection
                 note = form.save(commit=False)
                 note.save()
-
-                for tag_name in form.cleaned_data['tags']:
-                    tag, created = Tag.objects.get_or_create(name=tag_name)
-                    note.tags.add(tag)
-
+                for tag in tags:
+                    # Check if the tag already exists
+                    tag_obj, created = Tag.objects.get_or_create(name=tag)
+                    note.tags.add(tag_obj)
             return redirect('noteSearch')
     else:
         formset = NoteFormSet()
-
-    return render(request, 'noteUpload.html', {'formset': formset})
+    return render(request, 'noteUpload.html', {'formset': formset, 'tag_form': tag_form})
