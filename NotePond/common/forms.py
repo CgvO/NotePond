@@ -23,3 +23,7 @@ class search(forms.Form):
         queryset=Tag.objects.all(), required=False)
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(), required=False)
+
+class PasscodeForm(forms.Form):
+    passcode = forms.CharField(label='Passcode', widget=forms.PasswordInput)
+    

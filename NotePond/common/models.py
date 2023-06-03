@@ -18,7 +18,6 @@ class Course(models.Model):
 class Note(models.Model):
     title = models.CharField(max_length=200)
     note_file = models.FileField(upload_to='notes/')
-    note_image = models.ImageField(upload_to='notes/images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
     course = models.ForeignKey(
@@ -26,6 +25,7 @@ class Note(models.Model):
     week = models.IntegerField(null=True, blank=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    password = models.CharField(max_length=128,blank=True, help_text='Optional Password')
 
     def __str__(self):
         return self.title

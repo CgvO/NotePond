@@ -53,13 +53,28 @@ def noteSearch(request):
         return render(request, 'noteSearch.html', context)
 
 def noteView(request, note_id):
-        note = Note.objects.all()[note_id-1]
+        note = get_object_or_404(Note, id=note_id)
         tags = note.tags.all()
         form = NoteForm(instance=note)
-        return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form})
+
+        if request.method == 'POST':
+            password_form = PasscodeForm(request.POST)
+            if password_form.is_valid():
+                passcode = password_form.cleaned_data['passcode']
+                # Implement your passcode validation logic here
+                if passcode == note.password:  # Replace 'your_passcode' with your actual passcode
+                    request.session['authenticated'] = True
+                    return redirect('noteEdit', note_id=note_id)
+                else:
+                    password_form = PasscodeForm()
+                    return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form})
+   
+        else:
+            password_form = PasscodeForm()
+            return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form})
    
 def noteEdit(request, note_id):
-    note = Note.objects.all()[note_id-1]
+    note = get_object_or_404(Note, id=note_id)
     if request.method == 'POST':
         form = NoteForm(request.POST, request.FILES, instance=note)
         if form.is_valid():
@@ -69,19 +84,8 @@ def noteEdit(request, note_id):
         form = NoteForm(instance=note)
         return render(request, 'noteEdit.html', {"form": form, "note_id": note_id})
         
-
-"""
-def download_file(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
-    file_content = note.file_content
-    file_name = f"note_{note_id}.txt"
-
-    response = HttpResponse(
-        file_content, as_attachment=False, filename=file_name, content_type='application/octet-stream')
-    return response
-"""
 def delete(request, note_id):
-    note = Note.objects.all()[note_id-1]
+    note = get_object_or_404(Note, id=note_id)
     note.delete()
     return redirect('noteSearch')
 
@@ -98,7 +102,7 @@ def download_file(request, note_id):
         return HttpResponse("File not found.")
 
 def pdf_view(request, note_id):
-    note = Note.objects.all()[note_id-1]
+    note = get_object_or_404(Note, id=note_id)
     if note.note_file.path.split(".")[-1] == "pdf":
 
         response = FileResponse(open(note.note_file.path, 'rb'),
