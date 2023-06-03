@@ -7,7 +7,7 @@ class NoteForm(forms.ModelForm):
     week = forms.ChoiceField(choices=[(i, i) for i in range(1, 12)], required=False)
     class Meta:
         model = Note
-        fields = ['title', 'note_file', 'course', 'week', 'share_code', 'private_code']
+        fields = ['title', 'note_file', 'course', 'week', 'share_code', 'password']
 
     def clean_note_file(self):
         file = self.cleaned_data.get('note_file', False)

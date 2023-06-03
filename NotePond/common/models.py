@@ -15,7 +15,7 @@ class Course(models.Model):
 class Note(models.Model):
     title = models.CharField(max_length=200)
     share_code = models.PositiveIntegerField(null=True, blank=True)
-    private_code = models.PositiveIntegerField(null=True, blank=True)
+    password = models.PositiveIntegerField(null=True, blank=True)
     note_file = models.FileField(upload_to='notes/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, related_name='notes')
