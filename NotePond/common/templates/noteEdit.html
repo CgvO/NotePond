@@ -1,0 +1,8 @@
+<h1>Edit Note</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save</button>
+</form>
+
+<a href="{% url 'delete' note_id=note_id %}"> Delete File</a>

@@ -17,7 +17,6 @@ class Note(models.Model):
     share_code = models.PositiveIntegerField(null=True, blank=True)
     private_code = models.PositiveIntegerField(null=True, blank=True)
     note_file = models.FileField(upload_to='notes/')
-    note_image = models.ImageField(upload_to='notes/images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, related_name='notes')
     course = models.ForeignKey(
