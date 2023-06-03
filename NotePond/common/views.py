@@ -53,24 +53,49 @@ def noteSearch(request):
         return render(request, 'noteSearch.html', context)
 
 def noteView(request, note_id):
-    if request.method == "POST":
-        return redirect("noteSearch.html")
-    else:
         note = Note.objects.all()[note_id-1]
         tags = note.tags.all()
+        form = NoteForm(instance=note)
+        return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form})
+   
+def noteEdit(request, note_id):
+    note = Note.objects.all()[note_id-1]
+    if request.method == 'POST':
+        form = NoteForm(request.POST, request.FILES, instance=note)
+        if form.is_valid():
+            form.save()
+            return redirect('noteView', note_id=note_id)
+    else:
+        form = NoteForm(instance=note)
+        return render(request, 'noteEdit.html', {"form": form, "note_id": note_id})
+        
 
-        return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,})
-
-
+"""
 def download_file(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     file_content = note.file_content
     file_name = f"note_{note_id}.txt"
 
-    response = FileResponse(
-        file_content, as_attachment=True, filename=file_name)
+    response = HttpResponse(
+        file_content, as_attachment=False, filename=file_name, content_type='application/octet-stream')
     return response
+"""
+def delete(request, note_id):
+    note = Note.objects.all()[note_id-1]
+    note.delete()
+    return redirect('noteSearch')
 
+
+def download_file(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+    file = note.note_file  # Assuming 'file' is the FileField in your model
+
+    if file:
+        response = FileResponse(file)
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.name)
+        return response
+    else:
+        return HttpResponse("File not found.")
 
 def pdf_view(request, note_id):
     note = Note.objects.all()[note_id-1]
@@ -80,10 +105,12 @@ def pdf_view(request, note_id):
                                 content_type='application/pdf')
         return response
     elif note.note_file.path.split(".")[-1] == "docx":
-        print(note.note_file.path)
         convert(note.note_file.path)
+        
         response = FileResponse(open(note.note_file.path.split(".")[0] + ".pdf", 'rb'),
                         content_type='application/pdf')
+        return response
+        
     elif note.note_file.path.split(".")[-1] == "png":
 
         return FileResponse(open(note.note_file.path, 'rb'),

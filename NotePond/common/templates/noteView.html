@@ -32,10 +32,13 @@
     <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
   <body>
-    <img src="{{ note.note_image.url }}" alt="Image">
-    <a href="{% url 'view_pdf' note_id=note_id %}">View PDF</a>
+    <a href="{% url 'download_file' note_id=note_id %}">Download file</a>
+    <a href="{% url 'delete' note_id=note_id %}"> Delete File</a>
     <br>
     <iframe src="{% url 'view_pdf' note_id=note_id %}" width="100%" height="600px"></iframe>
+    <a href="{% url 'noteEdit' note_id=note_id %}">EditNote</a>
+
+
     
     <a>title:</a>{{note.title}}
     <a>Course:</a>{{note.course.name}}

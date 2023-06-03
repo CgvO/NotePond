@@ -27,6 +27,9 @@ urlpatterns = [
     path('search/', views.noteSearch, name='noteSearch'),
     path("view/<int:note_id>/", views.noteView, name="noteView"),
     path('view_pdf/<int:note_id>', views.pdf_view, name='view_pdf'),
+    path('download_file/<int:note_id>', views.download_file, name='download_file'),
+    path('delete/<int:note_id>', views.delete, name='delete'),
+    path('noteEdit/<int:note_id>', views.noteEdit, name='noteEdit'),
     path('select2/', include("django_select2.urls")),
 ]
 
