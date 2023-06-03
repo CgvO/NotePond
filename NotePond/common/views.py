@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import Note, Tag, Course
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from .forms import NoteForm
 from django.forms import formset_factory
 from .models import *
@@ -9,6 +9,7 @@ from .forms import *
 from .filter import *
 from django.shortcuts import get_object_or_404
 import os
+from docx2pdf import convert
 # Create your views here.
 
 
@@ -51,13 +52,14 @@ def noteSearch(request):
 
         return render(request, 'noteSearch.html', context)
 
-
 def noteView(request, note_id):
     if request.method == "POST":
         return redirect("noteSearch.html")
     else:
         note = Note.objects.all()[note_id-1]
-        return render(request, 'noteView.html', {"note_id": note_id, "note": note})
+        tags = note.tags.all()
+
+        return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,})
 
 
 def download_file(request, note_id):
@@ -72,9 +74,26 @@ def download_file(request, note_id):
 
 def pdf_view(request, note_id):
     note = Note.objects.all()[note_id-1]
-    response = FileResponse(open(note.note_file.path, 'rb'),
-                            content_type='application/pdf')
-    return response
+    if note.note_file.path.split(".")[-1] == "pdf":
+
+        response = FileResponse(open(note.note_file.path, 'rb'),
+                                content_type='application/pdf')
+        return response
+    elif note.note_file.path.split(".")[-1] == "docx":
+        print(note.note_file.path)
+        convert(note.note_file.path)
+        response = FileResponse(open(note.note_file.path.split(".")[0] + ".pdf", 'rb'),
+                        content_type='application/pdf')
+    elif note.note_file.path.split(".")[-1] == "png":
+
+        return FileResponse(open(note.note_file.path, 'rb'),
+                                content_type='image/png')
+    elif note.note_file.path.split(".")[-1] == "txt":
+
+        return FileResponse(open(note.note_file.path, 'rb'),
+                                content_type='text/plain')
+        
+
 
 
 def noteUpload(request):
