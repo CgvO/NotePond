@@ -238,19 +238,10 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
-$(document).ready(function () {
-  $(".select2").select2({
-    tags: true,
-    tokenSeparators: [",", " "],
-    createTag: function (params) {
-      return {
-        id: params.term,
-        text: params.term,
-        newOption: true
-      }
-    }
-  });
-});
+      $(".select2").select2({
+        tags: true,
+        tokenSeparators: [","],
+      });
     </script>
   </head>
   <body>
@@ -295,6 +286,32 @@ $(document).ready(function () {
               <button type="submit">Upload</button>
             </form>
             {% endblock %}
+            <script>
+              $("#add_note_form_btn").click(function () {
+                // Clone the last form in the formset
+                let newForm = $("#note_form_set .note-form").last().clone();
+
+                // Get the total number of forms
+                let totalForms = $("#id_note-TOTAL_FORMS");
+
+                // Get the index of the new form (which is the current total number of forms)
+                let newIndex = totalForms.val();
+
+                // Update the form fields to have the correct name and id based on the new index
+                newForm.find("input, select, textarea").each(function () {
+                  let nameAttr = $(this)
+                    .attr("name")
+                    .replace(/-\d+-/, "-" + newIndex + "-");
+                  $(this).attr("name", nameAttr);
+                });
+
+                // Insert the new form at the end of the formset
+                newForm.appendTo("#note_form_set");
+
+                // Increment the total number of forms
+                totalForms.val(parseInt(totalForms.val()) + 1);
+              });
+            </script>
           </div>
         </section>
       </div>

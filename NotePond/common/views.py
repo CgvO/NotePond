@@ -129,17 +129,18 @@ def noteUpload(request):
     NoteFormSet = formset_factory(NoteForm, extra=1)
     tag_form = TagForm(request.POST or None)
     if request.method == 'POST':
-        formset = NoteFormSet(request.POST, request.FILES)
+        formset = NoteFormSet(request.POST, request.FILES, prefix='note')
         if formset.is_valid() and tag_form.is_valid():
             tags = tag_form.cleaned_data['tags']
             for form in formset:
-                note = form.save(commit=False)
-                note.save()
-                for tag in tags:
-                    # Check if the tag already exists
-                    tag_obj, created = Tag.objects.get_or_create(name=tag)
-                    note.tags.add(tag_obj)
+                if form.has_changed():
+                    note = form.save(commit=False)
+                    note.save()
+                    for tag in tags:
+                        # Check if the tag already exists
+                        tag_obj, created = Tag.objects.get_or_create(name=tag)
+                        note.tags.add(tag_obj)
             return redirect('noteSearch')
     else:
-        formset = NoteFormSet()
+        formset = NoteFormSet(prefix='note')
     return render(request, 'noteUpload.html', {'formset': formset, 'tag_form': tag_form})

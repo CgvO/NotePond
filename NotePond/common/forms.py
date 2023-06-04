@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Note, Tag, Course
 from django_select2.forms import Select2MultipleWidget
 
@@ -19,11 +20,21 @@ class NoteForm(forms.ModelForm):
             raise forms.ValidationError("Error. Could not read uploaded file")
 
 class TagForm(forms.Form):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        widget=forms.SelectMultiple(attrs={'class': 'select2'}),
-        required=False
+    tags = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'select2', 'data-tags': 'true'}),
+        required=False,
+        label="Tags: (seperate with commas)"
     )
+
+    def clean_tags(self):
+        # The value will be a comma separated string of tag names
+        tag_names = self.cleaned_data.get('tags', '')
+        tags = []
+        for name in tag_names.split(','):
+            # Get or create the tag by name
+            tag, created = Tag.objects.get_or_create(name=name)
+            tags.append(tag)
+        return tags
 
 class search(forms.Form):
     data = forms.CharField(max_length=20)

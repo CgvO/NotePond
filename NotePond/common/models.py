@@ -18,7 +18,7 @@ class Note(models.Model):
     password = models.PositiveIntegerField(null=True, blank=True)
     note_file = models.FileField(upload_to='notes/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    tags = models.ManyToManyField(Tag, related_name='notes')
+    tags = models.ManyToManyField(Tag, related_name='notes', help_text="Enter tags seperated by commas.")
     course = models.ForeignKey(
         Course, null=True, blank=True, on_delete=models.CASCADE, related_name='notes')
     week = models.PositiveIntegerField(null=True, blank=True)
