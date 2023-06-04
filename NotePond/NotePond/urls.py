@@ -30,6 +30,7 @@ urlpatterns = [
     path('download_file/<int:note_id>', views.download_file, name='download_file'),
     path('delete/<int:note_id>', views.delete, name='delete'),
     path('noteEdit/<int:note_id>', views.noteEdit, name='noteEdit'),
+    path('vote/<int:note_id>/<str:vote_type>/', views.vote, name='vote'),
     path('select2/', include("django_select2.urls")),
 ]
 

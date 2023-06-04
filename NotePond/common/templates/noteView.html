@@ -36,6 +36,8 @@
     <a href="{% url 'delete' note_id=note_id %}"> Delete File</a>
     <br>
     <iframe src="{% url 'view_pdf' note_id=note_id %}" width="100%" height="600px"></iframe>
+    <a href="{% url 'vote' note_id=note.id vote_type='upvote' %}">Upvote</a>
+    <a href="{% url 'vote' note_id=note.id vote_type='downvote' %}">Downvote</a>
 
     <a href="{% url 'noteEdit' note_id=note_id %}">EditNote</a>
 
@@ -45,7 +47,6 @@
       <button type="submit">Save</button>
     </form>
 
-    
     <a>title:</a>{{note.title}}
     <a>Course:</a>{{note.course.name}}
     <a>Week:</a>{{note.week}} 
@@ -55,6 +56,7 @@
     {%for tag in tags%}
     {{tag.name}},
     {%endfor%}
+
 
 </body>
 </html>
