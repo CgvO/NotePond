@@ -20,6 +20,8 @@ def noteSearch(request):
     tags = Tag.objects.all()  # Initialize tags variable with empty queryset
     courses = Course.objects.all()  # Fetch all courses
     notes = Note.objects.all()
+    share_code = Note.share_code
+    week = Note.week
     form = search()
     context = {
         'tags': tags,
@@ -34,17 +36,21 @@ def noteSearch(request):
 
         if form.is_valid():
             # get the data from the from
-            data = form.cleaned_data.get('data')
+            data = request.POST.get('data')
             tags = request.POST.getlist('tags')
             course = request.POST.get('course')
+            share_code = request.POST.get('share_code')
+            week = request.POST.get('week')
+            notes = search_files(data, tags, course, share_code, week)
 
         # Filter notes based on selected tag and course
-        notes = search_files(data, tags, course)
+        
         context = {
             'tags': tags,
             'courses': courses,
             'notes': notes,
             'form': form,
+            'share_code' : share_code
         }
         return render(request, 'noteSearch.html', context)
     else:

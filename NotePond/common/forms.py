@@ -37,11 +37,16 @@ class TagForm(forms.Form):
         return tags
 
 class search(forms.Form):
-    data = forms.CharField(max_length=20)
-    tag = forms.ModelChoiceField(
-        queryset=Tag.objects.all(), required=False)
+    share_code = forms.IntegerField(required=False)
+    data = forms.CharField(max_length=20, required=False)
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(), required=False)
+    week = forms.IntegerField(required=False)
+    tag = forms.ModelChoiceField(
+        queryset=Tag.objects.all(), required=False)
+    
+    
+    
 
 class PasscodeForm(forms.Form):
     passcode = forms.CharField(label='Passcode', widget=forms.PasswordInput)

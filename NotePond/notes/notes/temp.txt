@@ -1,0 +1,343 @@
+
+
+#include "BXP/bxp.h"
+#include "ADTs/prioqueue.h"
+#include "ADTs/hashmap.h"
+#include "ADTs/queue.h"
+#include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <signal.h>
+#include <valgrind/valgrind.h>
+
+#define UNUSED __attribute__((unused))
+#define HOST "localhost"
+#define PORT 19999
+#define QUERY_BUF_LEN 10000
+#define MAP_LEN 1000
+#define TIMER_MS 10
+
+unsigned long curr_svid = 0;
+
+const Map *eventMap;
+const PrioQueue *eventQueue;
+const Queue *fireQueue;
+
+pthread_mutex_t lockeventQueue = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lockfireQueue = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t map_lock = PTHREAD_MUTEX_INITIALIZER;
+
+
+typedef struct event
+{
+	char* host;
+	char *service;
+	unsigned port;
+	bool cancelled;
+	time_t time;
+	unsigned long svid;
+	unsigned long clid;
+} Event; //Information for request
+
+
+void free_time(void *a)
+{
+	time_t *time = (time_t *)a;
+	free(time);
+}
+
+int eventCmp(void *first, void *second)
+{
+	int status = 0;
+	Event *event1 = (Event *)first;
+	Event *event2 = (Event *)second;
+	if (event1->time < event2->time){
+		return status = -1;
+	} 
+	if (event1->time > event2->time)
+	{
+		return status = 1;
+	} 
+	return status;
+}
+
+int svidsCmp(void *first, void *second)
+{
+	int status = 0;
+	unsigned long *svid1 = (unsigned long *)first;
+	unsigned long *svid2 = (unsigned long *)second;
+	if (*svid1 < *svid2)
+	{
+		return status = -1;
+	} 
+	else if (*svid1 > *svid2){
+		return status = 1;
+	} 
+	return status;
+}
+
+long int hashEvent(void *a, long len)
+{
+	Event *theEvent = (Event *)a;
+	unsigned long svid = theEvent->svid; 
+	return (long) svid % len;
+}
+
+void eventFree(void *a)
+{
+	Event *theEvent = (Event *)a;
+	if (theEvent->host != NULL){
+		free(theEvent->host);
+	} 
+	if (theEvent->service != NULL){
+		free(theEvent->service);
+	}
+	if (theEvent != NULL) {
+		free(theEvent);
+	}
+	theEvent = NULL;
+}
+
+void keyFree(void *a)
+{
+	unsigned long* key = (unsigned long *)a;
+	free(key);
+}
+
+
+
+void timerHandle(UNUSED int n) 
+{
+	pthread_mutex_lock(&lockeventQueue);
+	pthread_mutex_lock(&map_lock);
+
+	Event *theEvent = NULL;
+	time_t *curr_time = NULL;
+
+	eventQueue->removeMin(eventQueue, (void **)&curr_time, (void **)&theEvent);
+
+	if (theEvent != NULL)
+	{
+		if (theEvent->time <= time(NULL))
+		{
+			unsigned long *svid = malloc(sizeof(unsigned long));
+			*svid = theEvent->svid;
+
+			if (!theEvent->cancelled)
+			{
+				pthread_mutex_lock(&lockfireQueue);
+				fireQueue->enqueue(fireQueue, theEvent); //Sandwhich lock avoid race conditions
+				pthread_mutex_unlock(&lockfireQueue);
+			}
+
+			free(svid);
+		}
+		else
+		{
+			eventQueue->insert(eventQueue, curr_time, theEvent);
+		}
+	}
+
+	theEvent = NULL;
+
+	pthread_mutex_unlock(&map_lock);
+	pthread_mutex_unlock(&lockeventQueue);
+}
+
+void *firing_thread(UNUSED void *arg)
+{
+	Event *event;
+	while (true)
+	{
+		pthread_mutex_lock(&lockfireQueue);
+		if (!fireQueue->isEmpty(fireQueue))
+		{
+			fireQueue->dequeue(fireQueue, (void **)&event);
+
+			BXPConnection bxpc = bxp_connect(event->host, event->port, event->service, 1, 1);
+			char request[1024];
+			char response[1024];
+			unsigned int request_len, response_len;
+			request_len = (unsigned) (sprintf(request, "%lu", event->clid) + 1);
+			bxp_call(bxpc, request, request_len, response, sizeof(response), &response_len);
+			bxp_disconnect(bxpc);
+			printf("Event fired: %lu|%s|%s|%u\n", event->clid, event->host, event->service, event->port);
+		}
+		pthread_mutex_unlock(&lockfireQueue);
+		usleep(10000);
+	}
+	return NULL;
+}
+
+void *query_thread(UNUSED void *arg)
+{
+	BXPEndpoint end_point;
+	BXPService service;
+	char query[QUERY_BUF_LEN], response[QUERY_BUF_LEN + 1];
+	unsigned query_len, response_len;
+
+	if (!bxp_init(PORT, 1)) 
+	{
+		printf("Initialization failed. Exiting...\n");
+		pthread_exit(NULL);
+	}
+
+	service = bxp_offer("DTS");
+	bool legal;
+	int num_tokens;
+
+	while (true)
+	{
+		query_len = bxp_query(service, &end_point, query, QUERY_BUF_LEN);
+		if (query_len > 0)
+		{
+			legal = false;
+			num_tokens = 0;
+			char *command;
+			UNUSED char *arg;
+			char *copy = strdup(query);
+
+			command = strtok(copy, "|");
+			do
+			{
+				num_tokens++;
+				arg = strtok(NULL, "|");
+			}
+			while (arg != NULL);
+
+			free(copy);
+
+			command = strtok(query, "|");
+
+			if (command != NULL)
+			{
+				if (strcmp(command, "OneShot") == 0 && num_tokens == 7) 
+				{
+					legal = true;
+
+					// Create Event and store in map/prioqueue
+					Event *event = malloc(sizeof(Event));
+					unsigned long *svid = malloc(sizeof(unsigned long));
+					time_t *time = malloc(sizeof(time_t));
+					
+					event->svid = curr_svid;
+					*svid = curr_svid;
+					curr_svid++;
+
+					event->clid = strtoul(strtok(NULL, "|"), NULL, 10);
+					unsigned long long int secs = strtoull(strtok(NULL, "|"), NULL, 10);
+					unsigned long long int usecs = strtoull(strtok(NULL, "|"), NULL, 10);
+					*time = (time_t)(secs + ((double)usecs / 1000000));
+					event->time = *time;
+					event->time = (time_t)(secs + ((double)usecs / 1000000));
+					event->host = strdup(strtok(NULL, "|"));
+					event->service = strdup(strtok(NULL, "|"));
+					event->port = strtoul(strtok(NULL, "|"), NULL, 10);
+					event->cancelled = false;
+
+					pthread_mutex_lock(&lockeventQueue);
+					pthread_mutex_lock(&map_lock);
+
+					eventMap->put(eventMap, (void *)svid, (void *)event);
+					eventQueue->insert(eventQueue, (void *)time, (void *)event);
+
+					pthread_mutex_unlock(&map_lock);
+					pthread_mutex_unlock(&lockeventQueue);
+
+					sprintf(response, "1%08lu", event->svid);
+				}
+				else if (strcmp(command, "Repeat") == 0 && num_tokens == 9)
+				{
+					legal = true;
+
+					sprintf(response, "0%s", command);
+				}
+				else if (strcmp(command, "Cancel") == 0 && num_tokens == 2)
+				{
+					legal = true;
+
+					// Find event in queue and set cancelled
+					unsigned long svid = strtoul(strtok(NULL, "|"), NULL, 10);
+					Event *event;
+
+					pthread_mutex_lock(&map_lock);
+
+					if (eventMap->get(eventMap, &svid, (void **)&event))
+					{
+						event->cancelled = true;
+						sprintf(response, "1%08lu", event->svid);
+					}
+					else
+					{
+						sprintf(response, "%08lu", event->svid);
+					}
+
+
+					pthread_mutex_unlock(&map_lock);
+				}
+			}	
+
+			if (!legal) sprintf(response, "0%s", query);
+
+			response_len = strlen(response) + 1;
+			bxp_response(service, &end_point, response, response_len);
+		}
+	}
+}
+
+int main()
+{
+	// Create our data structures
+	eventMap = HashMap(MAP_LEN, 0.75, hashEvent, svidsCmp, NULL, NULL);
+	eventQueue = PrioQueue_create(eventCmp, NULL, NULL);
+	fireQueue = Queue_create(eventFree);
+
+	// Set up a timer (10 ms)
+	struct sigaction sig_action;
+	struct itimerval timer;
+
+	memset(&sig_action, 0, sizeof(sig_action));
+	sig_action.sa_handler = &timerHandle;
+	sigaction(SIGALRM, &sig_action, NULL);
+
+	int timer_usec = TIMER_MS * 1000;
+	timer.it_value.tv_sec = 0;
+	timer.it_value.tv_usec = timer_usec;
+	timer.it_interval.tv_sec = 0;
+	timer.it_interval.tv_usec = timer_usec;
+	setitimer(ITIMER_REAL, &timer, NULL);
+	
+	// Set up query thread
+	pthread_t q_thread;
+	if (pthread_create(&q_thread, NULL, query_thread, NULL) != 0)
+	{
+		printf("Query thread creation failed. Exiting...\n");
+		return EXIT_FAILURE;
+	}
+
+	// Set up firing thread
+	pthread_t f_thread;
+	if (pthread_create(&f_thread, NULL, firing_thread, NULL) != 0)
+	{
+		printf("Firing thread creation failed. Exiting...\n");
+		return EXIT_FAILURE;
+	}
+
+
+	pthread_join(q_thread, NULL);
+	pthread_join(f_thread, NULL);
+
+	// Should never get here
+	printf("DTS stopped running unexpectedly. Exiting...\n");
+
+	eventMap->destroy(eventMap);
+	eventQueue->destroy(eventQueue);	
+	fireQueue->destroy(fireQueue);
+
+	return EXIT_FAILURE;
+}

@@ -1,7 +1,7 @@
-from django.db.models import Q
+from django.db.models import F
 from .models import Note
 
-def search_files(data, selected_tags, selected_course):
+def search_files(data, selected_tags, selected_course,share_code, week):
     notes = Note.objects.all()
 
     if selected_tags and selected_tags != ['']:
@@ -12,5 +12,13 @@ def search_files(data, selected_tags, selected_course):
 
     if data:
         notes = notes.filter(title__icontains=data)
+
+    if share_code:
+        notes = notes.filter(share_code__icontains=share_code)
+
+    if week:
+        notes = notes.filter(week__icontains=week)
+
+    notes = notes.annotate(difference=F('likes') - F('dislikes')).order_by('-difference')
 
     return notes
