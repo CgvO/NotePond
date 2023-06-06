@@ -61,23 +61,22 @@ def noteView(request, note_id):
         note = get_object_or_404(Note, id=note_id)
         tags = note.tags.all()
         form = NoteForm(instance=note)
-
         if request.method == 'POST':
             password_form = PasscodeForm(request.POST)
             if password_form.is_valid():
                 passcode = password_form.cleaned_data['passcode']
                 # Implement your passcode validation logic here
+                print(note.password)
                 if passcode == note.password:  # Replace 'your_passcode' with your actual passcode
                     request.session['authenticated'] = True
                     return redirect('noteEdit', note_id=note_id)
                 else:
                     password_form = PasscodeForm()
                     return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form})
-   
+
         else:
             password_form = PasscodeForm()
             return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form})
-
 
 def vote(request, note_id, vote_type):
     note = get_object_or_404(Note, id=note_id)
@@ -88,29 +87,25 @@ def vote(request, note_id, vote_type):
     note.save()
     return redirect('noteView', note_id=note_id)
 
-    
-   
 def noteEdit(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     if request.method == 'POST':
-        form = NoteForm(request.POST, request.FILES, instance=note)
+        form = EditForm(request.POST, request.FILES, instance=note)
         if form.is_valid():
-            form.save()
-            return redirect('noteView', note_id=note_id)
+            form.save()     
+        return redirect('noteView', note_id=note_id)
     else:
-        form = NoteForm(instance=note)
+        form = EditForm(instance=note)
         return render(request, 'noteEdit.html', {"form": form, "note_id": note_id})
-        
+
 def delete(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     note.delete()
     return redirect('noteSearch')
 
-
 def download_file(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     file = note.note_file  # Assuming 'file' is the FileField in your model
-
     if file:
         response = FileResponse(file)
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(file.name)

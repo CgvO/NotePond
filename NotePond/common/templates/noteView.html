@@ -211,7 +211,7 @@ font-size: 20px;
     <iframe src="{% url 'view_pdf' note_id=note_id %}" width="100%" height="520px"></iframe>
     <div id="buttons">
       <div id="vote">
-        <a id="upvote" idhref="{% url 'vote' note_id=note.id vote_type='upvote' %}"><img
+        <a id="upvote" href="{% url 'vote' note_id=note.id vote_type='upvote' %}"><img
           alt="Image"
           width="20px"
           height="20px"
