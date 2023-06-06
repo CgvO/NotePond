@@ -22,8 +22,184 @@
         letter-spacing: normal;
         line-height: 1.15;
         color: black;
-        background-color: #f5f5f5;
+        background: linear-gradient(to right, #6190e8, #a7bfe8);
       }
+    </style>
+    <style>
+
+#buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-radius: 50px;
+  margin: 20px;
+  padding: 10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 130px;
+  margin: 10px;
+  margin-right: 10px;
+  padding: 20px;
+  padding: 10px;
+  color: white;
+  background-color: #6190e8;
+  border-radius: 50px;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+
+}
+#delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  margin: 10px;
+  margin-right: 10px;
+  padding: 20px;
+  padding: 10px;
+  color: white;
+  background-color: #6190e8;
+  border-radius: 50px;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  margin: 10px;
+  padding: 10px;
+  color: white;
+  background-color: #6190e8;
+  border-radius: 50px;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#vote {
+  display: flex;
+  align-items: center;
+}
+#upvote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  margin: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  color: white;
+  background-color: limegreen;
+  border-radius: 50px;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#downvote {
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  margin: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  color: white;
+  background-color: #BA0021;
+  border-radius: 50px;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+a:hover {
+  cursor: pointer;
+  opacity: 90%;
+}
+#button {
+  width: 100px;
+  margin: 10px;
+  padding: 10px;
+  color: white;
+  border-radius: 50px;
+  background-color: #6190e8;
+
+}
+#button:hover {
+cursor: pointer;
+opacity: 90%;
+
+}
+#title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#title span{
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+#info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-radius: 50px;
+  margin: 20px;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#info a{
+padding-top: 50px;
+padding-bottom: 50px;
+padding-right: 100px;
+font-size: 20px;
+}
+#password {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  margin-left: 40%;
+}
+#password input{
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+#form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+#form-items {
+  display: flex;
+  align-items: center;
+}
+#form-items label{
+  display: none;
+}
+#form-items input{
+  width: 150px;
+}
     </style>
     <link
       rel="stylesheet"
@@ -32,31 +208,43 @@
     <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
   <body>
-    <a href="{% url 'download_file' note_id=note_id %}">Download file</a>
-    <a href="{% url 'delete' note_id=note_id %}"> Delete File</a>
-    <br>
-    <iframe src="{% url 'view_pdf' note_id=note_id %}" width="100%" height="600px"></iframe>
-    <a href="{% url 'vote' note_id=note.id vote_type='upvote' %}">Upvote</a>
-    <a href="{% url 'vote' note_id=note.id vote_type='downvote' %}">Downvote</a>
-
-    <a href="{% url 'noteEdit' note_id=note_id %}">EditNote</a>
-
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ password_form.as_p }}
-      <button type="submit">Save</button>
-    </form>
-
-    <a>title:</a>{{note.title}}
-    <a>Course:</a>{{note.course.name}}
-    <a>Week:</a>{{note.week}} 
-    <a>>Likes</a>{{note.likes}} 
-    <a>dislikes</a>{{note.dislikes}} 
-    <a>Related tags:</a>
-    {%for tag in tags%}
-    {{tag.name}},
-    {%endfor%}
-
-
+    <iframe src="{% url 'view_pdf' note_id=note_id %}" width="100%" height="520px"></iframe>
+    <div id="buttons">
+      <div id="vote">
+        <a id="upvote" idhref="{% url 'vote' note_id=note.id vote_type='upvote' %}"><img
+          alt="Image"
+          width="20px"
+          height="20px"
+          src="{% static 'like.png' %}"
+          class="home-icon"
+        /></a> {{note.likes}} 
+        <a id="downvote" href="{% url 'vote' note_id=note.id vote_type='downvote' %}"><img
+          alt="Image"
+          width="20px"
+          height="20px"
+          src="{% static 'dislike.png' %}"
+          class="home-icon"
+        /></a> {{note.dislikes}} 
+      </div>
+      <div id="password">
+        <form id="form" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div id="form-items">{{ password_form.as_p }}</div>
+          <button id="button" type="submit">Code</button>
+        </form>
+      </div>
+      <div>
+        <a id="download" href="{% url 'download_file' note_id=note_id %}">Download File</a>
+        <a id="delete" href="{% url 'delete' note_id=note_id %}">Delete File</a>
+        <a id="edit" href="{% url 'noteEdit' note_id=note_id %}">Edit File</a>
+      </div>
+    </div>
+    <div>
+    <div id="info">
+      <div id="title"><span>Title: {{note.title}}</span></div>
+      <div id="title"><span>Course: {{note.course.name}}</span></div>
+      <div id="title"><span>Week: {{note.week}}</span></div>
+      <div id="title"><span>Tags:{%for tag in tags%} {{tag.name}}{%endfor%}</span></div>
+    </div>
 </body>
 </html>

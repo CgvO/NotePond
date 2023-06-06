@@ -1,8 +1,319 @@
-<h1>Edit Note</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <title>{% block title %}NotePond{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <style data-tag="reset-style-sheet">
+      html {
+        line-height: 1.15;
+      }
+      body {
+        margin: 0;
+      }
+      * {
+        box-sizing: border-box;
+        border-width: 0;
+        border-style: solid;
+      }
+      p,
+      li,
+      ul,
+      pre,
+      div,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      figure,
+      blockquote,
+      figcaption {
+        margin: 0;
+        padding: 0;
+      }
+      button {
+        background-color: transparent;
+      }
+      button,
+      input,
+      optgroup,
+      select,
+      textarea {
+        font-family: inherit;
+        font-size: 100%;
+        line-height: 1.15;
+        margin: 0;
+      }
+      button,
+      select {
+        text-transform: none;
+      }
+      button,
+      [type="button"],
+      [type="reset"],
+      [type="submit"] {
+        -webkit-appearance: button;
+      }
+      button::-moz-focus-inner,
+      [type="button"]::-moz-focus-inner,
+      [type="reset"]::-moz-focus-inner,
+      [type="submit"]::-moz-focus-inner {
+        border-style: none;
+        padding: 0;
+      }
+      button:-moz-focus,
+      [type="button"]:-moz-focus,
+      [type="reset"]:-moz-focus,
+      [type="submit"]:-moz-focus {
+        outline: 1px dotted ButtonText;
+      }
+      a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+      input {
+        padding: 2px 4px;
+      }
+      img {
+        display: block;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Inter;
+        font-size: 16px;
+      }
+      body {
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        text-transform: none;
+        letter-spacing: normal;
+        line-height: 1.15;
+        color: black;
+        background-color: #f5f5f5;
+      }
+    </style>
+    <style>
+      #form-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+      }
 
-<a href="{% url 'delete' note_id=note_id %}"> Delete File</a>
+      form {
+        width: 600px;
+        max-width: 600px;
+        margin-top: 50px;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        font-family: Inter;
+      }
+
+      form p {
+        margin-top: 20px;
+      }
+
+      form input[type="text"],
+      form button[type="button"],
+      form button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-size: 18px;
+        border-radius: 50px;
+        border: none;
+        background-color: #fff;
+        transition: background-color 0.3s ease;
+      }
+
+      form input[type="number"] {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 50px;
+        border: 1px solid #ccc;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      form input[type="text"] {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 50px;
+        border: 1px solid #ccc;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      form button[type="submit"] {
+        margin-top: 20px;
+        background-color: #6190e8;
+        color: #ffffff;
+        cursor: pointer;
+      }
+
+      form button[type="submit"]:hover {
+        color: #ffffff;
+        background-color: #000000;
+      }
+
+      input[type="file"] {
+        display: flex;
+        cursor: pointer;
+        padding-left: 30%;
+        width: 520px;
+        height: 200px;
+        background-color: #ffffff;
+        border: 2px dashed #ccc;
+        line-height: 200px;
+        text-align: center;
+        margin: 0 auto;
+      }
+      
+      input[type="file"]:hover {
+        background-color: #f5f5f5;
+      }
+
+      #title {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        padding-left: 42%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-size: 18px;
+        border-radius: 50px;
+        border: none;
+        color: white;
+        background-color: #6190e8;
+        transition: background-color 0.3s ease;
+      }
+      #title:hover {
+        color: white;
+        background-color: black;
+
+      }
+
+      .django-select2 {
+        margin: 0px;
+      }
+      .select2 {
+        width: 100%;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      data-tag="font"
+    />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+      $(".select2").select2({
+        tags: true,
+        tokenSeparators: [","],
+      });
+    </script>
+  </head>
+  <body>
+    <div>
+      <link href="{% static 'home.css' %}" rel="stylesheet" />
+      <div class="home-container">
+        <section id="page" class="home-main-container" style="height: 1200px">
+          <div class="home-menu">
+            <div class="home-navigation">
+              <nav class="home-centered">
+                <div class="home-left">
+                  <div class="home-links">
+                    <a class="home-text link" href="{% url 'index' %}">Home</a>
+                    <a class="home-text link" href="{% url 'noteUpload' %}"
+                      >Upload</a
+                    >
+                    <a class="home-text link" href="{% url 'noteSearch' %}"
+                      >Search</a
+                    >
+                    <a class="home-text link" href="{% url 'admin:index' %}"
+                      >Admin</a
+                    >
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+            <div id="form-div">
+              {% block content %}
+              <form id = "search-form" method="POST" name="searched">
+                <div id="form-title">Edit Notes</div>
+                {% csrf_token %}
+                <div id="items">
+                  {{ form.as_p }}
+                  <button id="submit" type="submit">Save</button>
+                </div>
+                <div id="title">
+                  <a href="{% url 'delete' note_id=note_id %}">Delete File</a>
+                </div>
+              </div>
+              </form>
+            </div>
+            {% endblock %}
+            <script>
+              $("#add_note_form_btn").click(function () {
+                // Clone the last form in the formset
+                let newForm = $("#note_form_set .note-form").last().clone();
+
+                // Get the total number of forms
+                let totalForms = $("#id_note-TOTAL_FORMS");
+
+                // Get the index of the new form (which is the current total number of forms)
+                let newIndex = totalForms.val();
+
+                // Update the form fields to have the correct name and id based on the new index
+                newForm.find("input, select, textarea").each(function () {
+                  let nameAttr = $(this)
+                    .attr("name")
+                    .replace(/-\d+-/, "-" + newIndex + "-");
+                  $(this).attr("name", nameAttr);
+                });
+
+                // Insert the new form at the end of the formset
+                newForm.appendTo("#note_form_set");
+
+                totalForms.val(parseInt(totalForms.val()) + 1);
+              });
+            </script>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script>
+      function increase() {
+        var element = document.getElementById("page");
+        var currentHeight = parseInt(element.style.height);
+        element.style.height = (currentHeight + 620) + "px";
+      }
+    </script>    
+  </body>
+  <main></main>
+</html>
