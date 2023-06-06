@@ -264,12 +264,12 @@
           </div>
             <div id="form-div">
               {% block content %}
-              <form id = "search-form" method="POST" name="searched">
+              <form  method="post" name="searched" enctype="multipart/form-data" >
                 <div id="form-title">Edit Notes</div>
-                {% csrf_token %}
                 <div id="items">
+                  {% csrf_token %}
                   {{ form.as_p }}
-                  <button id="submit" type="submit">Save</button>
+                  <button id="submit" type="submit" name="searched">Save</button>
                 </div>
                 <div id="title">
                   <a href="{% url 'delete' note_id=note_id %}">Delete File</a>
