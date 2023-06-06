@@ -168,7 +168,7 @@ p input {
   justify-content: space-between;
   font-weight: bold;
   margin-top: 12%;
-  margin-bottom: 5px;
+  margin-bottom: -145px;
   padding: 20px;
   background-color: #fff;
   width: 100%;
@@ -226,7 +226,7 @@ cursor: pointer;
           </div>
           {% block content %}
           <div id="form">
-          <form id = "seach-form" method="POST" name="searched">
+          <form id = "search-form" method="POST" name="searched">
               {% csrf_token %}
               <div id="items">
                 {{ form.as_p }}
