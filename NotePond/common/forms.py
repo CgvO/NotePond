@@ -2,7 +2,7 @@ from django import forms
 
 from .models import Note, Tag, Course
 from django_select2.forms import Select2MultipleWidget
-
+from django.forms.widgets import CheckboxSelectMultiple
 
 class NoteForm(forms.ModelForm):
     week = forms.ChoiceField(choices=[(i, i) for i in range(1, 12)], required=False)
@@ -25,16 +25,34 @@ class TagForm(forms.Form):
         required=False,
         label="Tags: (seperate with commas)"
     )
+"""
+class TagDelete(forms.Form):
+    def __init__(self, my_argument, *args, **kwargs):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Note.objects.filter(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+            super(TagDelete, self).__init__(*args, **kwargs)
+        self.fields['tags'] = forms.ModelMultipleChoiceField(
+            queryset=Note.objects.get(id=note_id).tags.all(),
+            widget=forms.CheckboxSelectMultiple,
+            required=False
+        )
+"""
 
-    def clean_tags(self):
-        # The value will be a comma separated string of tag names
-        tag_names = self.cleaned_data.get('tags', '')
-        tags = []
-        for name in tag_names.split(','):
-            # Get or create the tag by name
-            tag, created = Tag.objects.get_or_create(name=name)
-            tags.append(tag)
-        return tags
+class TagDelete(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ["tags"]
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    def __init__(self,*args,note, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["tags"].queryset = note.tags.all()
 
 class search(forms.Form):
     share_code = forms.IntegerField(required=False)
@@ -49,9 +67,9 @@ class EditForm(forms.ModelForm):
     week = forms.ChoiceField(choices=[(i, i) for i in range(1, 12)], required=False)
     class Meta:
         model = Note
-        fields = ['title', 'note_file', 'course', 'week', 'share_code', 'password']
-    
+        fields = ['title','note_file', 'course', 'week', 'share_code', 'password']
+
 
 class PasscodeForm(forms.Form):
     passcode = forms.CharField(label='Passcode', widget=forms.PasswordInput)
-    
+

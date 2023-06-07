@@ -65,9 +65,11 @@ def noteView(request, note_id):
             password_form = PasscodeForm(request.POST)
             if password_form.is_valid():
                 passcode = password_form.cleaned_data['passcode']
+            
                 # Implement your passcode validation logic here
-                print(note.password)
-                if passcode == note.password:  # Replace 'your_passcode' with your actual passcode
+                passcode = int(passcode)
+                if passcode == note.password: 
+                    print() 
                     request.session['authenticated'] = True
                     return redirect('noteEdit', note_id=note_id)
                 else:
@@ -91,12 +93,24 @@ def noteEdit(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     if request.method == 'POST':
         form = EditForm(request.POST, request.FILES, instance=note)
-        if form.is_valid():
-            form.save()     
+        tag_form = TagForm(request.POST)
+        tag_delete = TagDelete(request.POST, note=note)
+        print("form",tag_delete.is_valid())
+        if form.is_valid() and tag_form.is_valid():
+            tags = tag_form.cleaned_data['tags'] 
+            form.save()
+            #selected_tags = tag_delete.cleaned_data['tags']
+            for tag in tags:
+                # Check if the tag already exists
+                tag_obj, created = Tag.objects.get_or_create(name=tag)
+                note.tags.add(tag_obj)  
+        print(tag_delete.errors.as_text())
         return redirect('noteView', note_id=note_id)
     else:
         form = EditForm(instance=note)
-        return render(request, 'noteEdit.html', {"form": form, "note_id": note_id})
+        tag_form = TagForm()
+        tag_delete = TagDelete(note=note)
+        return render(request, 'noteEdit.html', {"form": form, "note_id": note_id, "tag_form":tag_form,"tag_delete": tag_delete })
 
 def delete(request, note_id):
     note = get_object_or_404(Note, id=note_id)
