@@ -19,10 +19,13 @@ def home(request):
 def noteSearch(request):
     tags = Tag.objects.all()  # Initialize tags variable with empty queryset
     courses = Course.objects.all()  # Fetch all courses
-    notes = Note.objects.all()
+    # notes = Note.objects.all()
     share_code = Note.share_code
     week = Note.week
     form = search()
+
+    notes = Note.objects.filter(share_code__isnull=True) if request.method == 'GET' else Note.objects.all()
+
     context = {
         'tags': tags,
         'courses': courses,
