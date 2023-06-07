@@ -25,6 +25,10 @@ class TagForm(forms.Form):
         required=False,
         label="Tags: (seperate with commas)"
     )
+    def cleaned(self):
+        return self.tags.split(',')
+
+
 """
 class TagDelete(forms.Form):
     def __init__(self, my_argument, *args, **kwargs):
@@ -62,7 +66,7 @@ class search(forms.Form):
     week = forms.IntegerField(required=False)
     tag = forms.ModelChoiceField(
         queryset=Tag.objects.all(), required=False)
-    
+
 class EditForm(forms.ModelForm):
     week = forms.ChoiceField(choices=[(i, i) for i in range(1, 12)], required=False)
     class Meta:

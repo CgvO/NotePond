@@ -98,13 +98,14 @@ def noteEdit(request, note_id):
         print("form",tag_delete.is_valid())
         if form.is_valid() and tag_form.is_valid():
             tags = tag_form.cleaned_data['tags'] 
+            tags_list = tags.split(',')
+            print(tags_list)
             form.save()
             #selected_tags = tag_delete.cleaned_data['tags']
-            for tag in tags:
+            for tag in tags_list:
                 # Check if the tag already exists
                 tag_obj, created = Tag.objects.get_or_create(name=tag)
                 note.tags.add(tag_obj)  
-        print(tag_delete.errors.as_text())
         return redirect('noteView', note_id=note_id)
     else:
         form = EditForm(instance=note)
@@ -149,8 +150,6 @@ def pdf_view(request, note_id):
 
         return FileResponse(open(note.note_file.path, 'rb'),
                                 content_type='text/plain')
-        
-
 
 def noteUpload(request):
     NoteFormSet = formset_factory(NoteForm, extra=1)
