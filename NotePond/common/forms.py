@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Note, Tag, Course
+from .models import Note, Tag, Course, Comment
 from django_select2.forms import Select2MultipleWidget
 from django.forms.widgets import CheckboxSelectMultiple
 
@@ -29,28 +29,12 @@ class TagForm(forms.Form):
         return self.tags.split(',')
 
 
-"""
-class TagDelete(forms.Form):
-    def __init__(self, my_argument, *args, **kwargs):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Note.objects.filter(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
-            super(TagDelete, self).__init__(*args, **kwargs)
-        self.fields['tags'] = forms.ModelMultipleChoiceField(
-            queryset=Note.objects.get(id=note_id).tags.all(),
-            widget=forms.CheckboxSelectMultiple,
-            required=False
-        )
-"""
-
 class TagDelete(forms.ModelForm):
     class Meta:
         model = Note
         fields = ["tags"]
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=None,
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
@@ -77,3 +61,8 @@ class EditForm(forms.ModelForm):
 class PasscodeForm(forms.Form):
     passcode = forms.CharField(label='Passcode', widget=forms.PasswordInput)
 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

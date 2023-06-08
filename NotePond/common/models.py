@@ -11,7 +11,7 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
-
+    
 class Note(models.Model):
     title = models.CharField(max_length=200)
     share_code = models.PositiveIntegerField(null=True, blank=True)
@@ -28,5 +28,10 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+class Comment(models.Model):
+    content = models.TextField()
+    note = models.ForeignKey(
+        Note, null=True, blank=True, on_delete=models.CASCADE, related_name='notes')
+    created_at = models.DateTimeField(auto_now_add=True) 
 
-    
+

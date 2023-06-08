@@ -269,7 +269,6 @@
                 <div id="items">
                   {% csrf_token %}
                   {{tag_form.as_p}}
-                  {{tag_delete.as_p}}
                   {{ form.as_p }}
                   <button id="submit" type="submit" name="searched">Save</button>
                 </div>
@@ -277,6 +276,13 @@
                   <a href="{% url 'delete' note_id=note_id %}">Delete File</a>
                 </div>
               </div>
+              </form>
+              <form method="post" enctype="multipart/form-data">
+                <div id="items">
+                  {% csrf_token %}
+                  {{tag_delete.as_p}}
+                  <button id="submit" type="submit" name="searched">Save</button>
+                </div>
               </form>
             </div>
             {% endblock %}

@@ -11,7 +11,6 @@ import os
 from docx2pdf import convert
 # Create your views here.
 
-
 def home(request):
     return render(request, 'base.html')
 
@@ -54,7 +53,6 @@ def noteSearch(request):
         }
         return render(request, 'noteSearch.html', context)
     else:
-
         return render(request, 'noteSearch.html', context)
 
 def noteView(request, note_id):
@@ -63,22 +61,29 @@ def noteView(request, note_id):
         form = NoteForm(instance=note)
         if request.method == 'POST':
             password_form = PasscodeForm(request.POST)
+            comment_form = CommentForm(request.POST)
             if password_form.is_valid():
                 passcode = password_form.cleaned_data['passcode']
             
                 # Implement your passcode validation logic here
                 passcode = int(passcode)
                 if passcode == note.password: 
-                    print() 
                     request.session['authenticated'] = True
                     return redirect('noteEdit', note_id=note_id)
-                else:
-                    password_form = PasscodeForm()
-                    return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form})
+            if comment_form.is_valid():
+                comment = comment_form.save()
+                comment.note = note
+                comment.save()
 
-        else:
+            comment_form = CommentForm()
             password_form = PasscodeForm()
-            return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form})
+            comments = Comment.objects.filter(note=note)
+            return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form, "comment_form":comment_form, "comments":comments}) 
+        else:
+            comment_form = CommentForm()
+            password_form = PasscodeForm()
+            comments = Comment.objects.filter(note=note)
+            return render(request, 'noteView.html', {"note_id": note_id, "note": note, "tags": tags,"form": form, "password_form":password_form, "comment_form":comment_form,"comments":comments})
 
 def vote(request, note_id, vote_type):
     note = get_object_or_404(Note, id=note_id)
@@ -95,7 +100,6 @@ def noteEdit(request, note_id):
         form = EditForm(request.POST, request.FILES, instance=note)
         tag_form = TagForm(request.POST)
         tag_delete = TagDelete(request.POST, note=note)
-        print("form",tag_delete.is_valid())
         if form.is_valid() and tag_form.is_valid():
             tags = tag_form.cleaned_data['tags'] 
             tags_list = tags.split(',')
@@ -106,6 +110,11 @@ def noteEdit(request, note_id):
                 # Check if the tag already exists
                 tag_obj, created = Tag.objects.get_or_create(name=tag)
                 note.tags.add(tag_obj)  
+        else:
+            if tag_delete.is_valid():
+                delete_list = tag_delete.cleaned_data['tags']
+                for tag in delete_list:
+                    tag.delete()
         return redirect('noteView', note_id=note_id)
     else:
         form = EditForm(instance=note)

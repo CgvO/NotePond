@@ -246,5 +246,14 @@ font-size: 20px;
       <div id="title"><span>Week: {{note.week}}</span></div>
       <div id="title"><span>Tags:{%for tag in tags%} {{tag.name}}{%endfor%}</span></div>
     </div>
+    <form method="post">
+      {% csrf_token %}
+      {{comment_form.as_p}}
+      <button type="submit">Submit</button>
+  </form>
+  {%for comment in comments%}
+  {{comment.content}}
+  {% endfor%}
+  
 </body>
 </html>
