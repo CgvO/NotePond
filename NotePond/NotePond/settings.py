@@ -25,10 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#fc0klydve2c(7&16i5r94(&h&9^0tnd3+6sz=k@klv9%xd=hm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+'''
+debug below for heroku
 DEBUG = True
 
 ALLOWED_HOSTS = []
+'''
+DEBUG = False
 
+ALLOWED_HOSTS = ['127.0.0.1','sampledomain.com']
 
 # Application definition
 
@@ -42,7 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_select2",
 ]
-
+'''
+Middleware below for heroku
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -52,6 +58,18 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+'''
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
 
 ROOT_URLCONF = "NotePond.urls"
 
