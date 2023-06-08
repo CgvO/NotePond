@@ -68,7 +68,7 @@ def noteView(request, note_id):
             if password_form.is_valid():
                 passcode = password_form.cleaned_data['passcode']
             
-                # Implement your passcode validation logic here
+                # passcode validation
                 passcode = int(passcode)
                 if passcode == note.password: 
                     request.session['authenticated'] = True
@@ -77,7 +77,7 @@ def noteView(request, note_id):
                 comment = comment_form.save()
                 comment.note = note
                 comment.save()
-
+                return redirect('noteView', note_id=note_id)
             comment_form = CommentForm()
             password_form = PasscodeForm()
             comments = Comment.objects.filter(note=note)
