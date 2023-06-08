@@ -18,10 +18,13 @@ def home(request):
 def noteSearch(request):
     tags = Tag.objects.all()  # Initialize tags variable with empty queryset
     courses = Course.objects.all()  # Fetch all courses
-    notes = Note.objects.all()
+    # notes = Note.objects.all()
     share_code = Note.share_code
     week = Note.week
     form = search()
+
+    notes = Note.objects.filter(share_code__isnull=True) if request.method == 'GET' else Note.objects.all()
+
     context = {
         'tags': tags,
         'courses': courses,
@@ -167,11 +170,12 @@ def noteUpload(request):
         formset = NoteFormSet(request.POST, request.FILES, prefix='note')
         if formset.is_valid() and tag_form.is_valid():
             tags = tag_form.cleaned_data['tags']
+            tags_list = tags.split(',')
             for form in formset:
                 if form.has_changed():
                     note = form.save(commit=False)
                     note.save()
-                    for tag in tags:
+                    for tag in tags_list:
                         # Check if the tag already exists
                         tag_obj, created = Tag.objects.get_or_create(name=tag)
                         note.tags.add(tag_obj)
