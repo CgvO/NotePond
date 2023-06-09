@@ -28,15 +28,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#fc0klydve2c(7&16i5r94(&h&9^0tnd3+6sz=k@klv9%xd=hm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
+'''
 DEBUG = True
 
 ALLOWED_HOSTS = []
 '''
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','notepond.herokuapp.com/']
-'''
+ALLOWED_HOSTS = ['notepond.herokuapp.com/']
+
 
 # Application definition
 
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_select2",
 ]
-
+'''
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -72,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-'''
+
 ROOT_URLCONF = "NotePond.urls"
 
 TEMPLATES = [
@@ -149,8 +149,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'notes/')
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 #XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
-
+'''
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 
 django_heroku.settings(locals())
+'''
