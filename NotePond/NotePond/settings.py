@@ -151,6 +151,6 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 #XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'NotePond/common/static'), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'common/static'), )
 
 django_heroku.settings(locals())
