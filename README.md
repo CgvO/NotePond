@@ -24,7 +24,7 @@ $ python -m venv .venv
 4. Activate the virtual environment:
 
 Windows
-$ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+$ Set-ExecutionPolicy Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 $ .venv\Scripts\Activate.ps1
 
 macOS
