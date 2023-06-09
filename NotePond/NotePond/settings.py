@@ -29,9 +29,9 @@ SECRET_KEY = "django-insecure-#fc0klydve2c(7&16i5r94(&h&9^0tnd3+6sz=k@klv9%xd=hm
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["notepond.herokuapp.com"]
 '''
 DEBUG = False
 
